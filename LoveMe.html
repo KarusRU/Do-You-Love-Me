@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>She/He likes me...?</title>
+    <style>
+        @font-face {
+            font-family: 'Cookiemonster';
+            src: url('Cookiemonster-gv11.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Cookiemonster', cursive; 
+            background-color: #f8e0e0; 
+            margin: 0;
+            overflow: hidden; 
+            position: relative; 
+            color: #a34a4a; 
+        }
+        h1 {
+            margin-bottom: 40px;
+            color: #a34a4a; 
+            font-size: 2em; 
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            position: relative; 
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            background-color: #f1c1c1; 
+            color: #a34a4a; 
+            border-radius: 20px; 
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Cookiemonster', cursive; 
+        }
+        button:hover {
+            transform: scale(1.1); 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+        }
+        #gif-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); 
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        #gif-container img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+        #video-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); 
+            align-items: center;
+            justify-content: center;
+        }
+        #video-container iframe {
+            width: 80%;
+            height: 60%;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            z-index: 100;
+        }
+
+        form input {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @keyframes moveButton {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(10px, 10px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .moving {
+            animation: moveButton 1s linear;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .question-mark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: fadeInOut 4s ease infinite; 
+        }
+    </style>
+</head>
+<body>
+    <form id="discord-form">
+        <label for="discord-nick">Discord Nickname:</label>
+        <input type="text" id="discord-nick" name="discord-nick" required>
+    </form>
+
+    <h1 id="question">Do you love me?</h1>
+    <div class="buttons">
+        <button id="yes">Yes</button>
+        <button id="no" disabled>No</button>
+    </div>
+    <div id="gif-container">
+        <img src="" alt="Gif">
+    </div>
+    <div id="video-container">
+        <iframe id="video-iframe" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        const noButton = document.getElementById('no');
+        const yesButton = document.getElementById('yes');
+        const question = document.getElementById('question');
+        const gifContainer = document.getElementById('gif-container');
+        const gifImage = gifContainer.querySelector('img');
+        const videoContainer = document.getElementById('video-container');
+        const videoIframe = document.getElementById('video-iframe');
+        const discordNickInput = document.getElementById('discord-nick');
+
+        let hoverCount = 0;
+
+        const textsToShow = [
+            "Do you like me?",
+            "Do you like, like me?",
+            "Are you sure?",
+            "Hmmm?",
+            "Are you certain of your certainty?"
+        ];
+
+        function createQuestionMark() {
+            const questionMark = document.createElement('div');
+            questionMark.textContent = '?';
+            questionMark.classList.add('question-mark');
+            const size = Math.random() * 30 + 10; 
+            questionMark.style.fontSize = `${size}px`;
+
+            const maxX = window.innerWidth;
+            const maxY = window.innerHeight;
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            questionMark.style.left = `${randomX}px`;
+            questionMark.style.top = `${randomY}px`;
+
+            document.body.appendChild(questionMark);
+
+            const nextCreationTime = Math.random() * 3000 + 1000; 
+            setTimeout(createQuestionMark, nextCreationTime);
+        }
+
+        createQuestionMark(); 
+
+        function getRandomPosition() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const buttonWidth = noButton.offsetWidth;
+            const buttonHeight = noButton.offsetHeight;
+
+            const newX = Math.random() * (windowWidth - buttonWidth);
+            const newY = Math.random() * (windowHeight - buttonHeight);
+
+            return { x: newX, y: newY };
+        }
+
+        function moveNoButton() {
+            const newPosition = getRandomPosition();
+            const currentPos = noButton.getBoundingClientRect();
+            const deltaX = newPosition.x - currentPos.left;
+            const deltaY = newPosition.y - currentPos.top;
+
+            noButton.style.transition = 'transform 1s linear';
+            noButton.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+            setTimeout(() => {
+                noButton.style.transition = '';
+                noButton.style.transform = '';
+            }, 1000);
+        }
+
+        function handleMouseMove(event) {
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+            const buttonRect = noButton.getBoundingClientRect();
+            
+            const isNear = (
+                mouseX > buttonRect.left - 10 && 
+                mouseX < buttonRect.right + 10 && 
+                mouseY > buttonRect.top - 10 && 
+                mouseY < buttonRect.bottom + 10
+            );
+
+            if (isNear) {
+                hoverCount++;
+                if (hoverCount % 5 === 0) {
+                    changeQuestionText();
+                }
+                moveNoButton();
+            }
+        }
+
+        function changeQuestionText() {
+            const randomIndex = Math.floor(Math.random() * textsToShow.length);
+            question.textContent = textsToShow[randomIndex];
+        }
+
+        noButton.addEventListener('mouseover', handleMouseMove);
+
+        yesButton.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            
+            const discordNick = discordNickInput.value.trim();
+            if (!discordNick) {
+                alert('Please enter your Discord nickname before sending.');
+                return;
+            }
+
+            const videoUrl = 'https://streamable.com/62z8bn?src=player-page-share';
+            videoIframe.src = videoUrl;
+            videoContainer.style.display = 'flex';
+            hideElements();
+
+            sendToDiscord(discordNick);
+        });
+
+        function hideElements() {
+            question.style.display = 'none';
+            yesButton.style.display = 'none';
+            noButton.style.display = 'none';
+            discordNickInput.style.display = 'none'; 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const yesButtonRect = yesButton.getBoundingClientRect();
+            const noButtonRect = noButton.getBoundingClientRect();
+            const centerX = (window.innerWidth - yesButtonRect.width - noButtonRect.width - 20) / 2;
+            const centerY = (window.innerHeight - yesButtonRect.height) / 2 + 50; 
+
+            yesButton.style.left = `${centerX}px`;
+            yesButton.style.top = `${centerY}px`;
+
+            noButton.style.left = `${centerX + yesButtonRect.width + 20}px`;
+            noButton.style.top = `${centerY}px`;
+        });
+
+        async function sendToDiscord(discordNick) {
+            const webhookUrl = ''; // Discord Webhook here
+
+            const payload = {
+                content: `@everyone :two_hearts:**${discordNick}** definitywnie ciebie lubi :two_hearts:` // Discord Message
+            };
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Błąd HTTP: ${response.status}`);
+                }
+
+                console.log('Message sent to Discord.');
+            } catch (error) {
+                console.error('Error while sending message to Discord:', error);
+            }
+        }
+    </script>
+</body>
+</html>
