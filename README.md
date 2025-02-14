@@ -1,7 +1,10 @@
+This fun page presents the user with a simple yet tricky question: "Do you like/love me?" (customizable). Two buttons appear—"Yes" and "No"—but there's a twist!
+
+The "No" button cannot be clicked because it will keep running away. 😆
+The user must enter a nickname before they can proceed. Without it, they won't be able to click anything.
+Once they enter their nickname and click "Yes", you will receive a message via Discord webhook (which you can also customize).
+Have fun surprising your Valentine! 💕
+
 !!! Make sure to enter your Discord webhook! Press Ctrl + F and search for "Discord Webhook here" in LoveMe.html and every file is in same folder !!!
 
-When someone enters their nickname and clicks "Yes", you'll receive a notification on your Discord webhook. To customize the message you receive, search for "Discord Message" in LoveMe.html.
-
 Personalize it however you like! :3
-
-Send it to your Valentine! 💖 (They won’t be able to press "No"—the button will run away! 😆)
